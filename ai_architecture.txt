@@ -1,0 +1,50 @@
+CareSyn — AI Architecture Documentation
+======================================
+
+Overview
+--------
+CareSyn uses a modern Structured LLM Orchestration design. Instead of just letting an AI chat freely, CareSyn wraps the AI inside strict code boundaries so it acts like a reliable database system rather than a chatbot.
+
+Architecture Flow
+-----------------
+1. User (Browser) inputs patient symptoms.
+2. Vercel Frontend makes a POST request to the Render Backend (/agent/analyze).
+3. Backend retrieves patient history (Age, Gestational Weeks, History) from the SQL database.
+4. Python Backend passes this data into the LangChain Pipeline.
+5. LangChain uses gpt-4o-mini to analyze symptoms and outputs strict JSON.
+6. Backend saves the assessment and automatically generates a prioritized follow-up task.
+
+The 5 Pillars of the AI Brain
+-----------------------------
+
+1. The Engine: OpenAI gpt-4o-mini
+   - Exceptionally fast, highly cost-effective, and maintains deep medical reasoning capability.
+   - Temperature is configured to 0. This makes the model highly consistent, clinical, and objective (same input yields same risk assessment).
+
+2. The Orchestrator: LangChain Core
+   - Forms a processing chain: prompt | llm | parser.
+   - Prompt: Structures the input variables cleanly.
+   - LLM: Executes the medical analysis.
+   - Parser: Discards conversational filler and extracts data.
+
+3. The Guardrails: Pydantic & Structured Output
+   - AI outputs are constrained using a Pydantic model (AgentOutput) with strict data types:
+     * risk_level (str): e.g. "High", "Medium", "Low"
+     * detected_risks (str): Comma-separated list of potential issues
+     * recommendations (str): Actionable clinic guide
+     * draft_sms (str): Ready-to-send SMS
+     * suggested_task (str): Task description
+     * is_urgent (bool): Urgency flag
+   - Validates that the AI output matches the database-ready schema exactly.
+
+4. Prompt Engineering (The Persona)
+   - System instruction: "You are an expert Maternal Care Coordination AI. You analyze patient profiles and symptoms to detect high-risk cases (e.g. preeclampsia)."
+   - Input format: Combines patient profile fields and active symptoms into a clean clinical context.
+
+5. Safe Failover (Programmatic Redundancy)
+   - In case of API limits, network disruption, or offline status, a built-in safety fallback catches the error and executes a local rules-based keyword analyzer.
+   - Ensures the application never crashes during patient care.
+
+Summary Pitch
+-------------
+"CareSyn feeds patient history and symptoms into a strict LangChain processing pipeline. The AI evaluates the risk using a clinical reasoning model (gpt-4o-mini), formats it into a highly specific JSON structure, and sends it directly back into our database. This allows us to instantly automate critical clinical tasks—like drafting patient text messages and flagging urgent priority appointments—without any human data entry errors."
