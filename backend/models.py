@@ -12,6 +12,7 @@ class Patient(Base):
     gestational_age_weeks = Column(Integer)
     is_first_pregnancy = Column(Boolean, default=True)
     medical_history = Column(Text, nullable=True)
+    preferred_language = Column(String, default="English")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     assessments = relationship("Assessment", back_populates="patient")

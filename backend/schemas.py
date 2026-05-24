@@ -40,6 +40,7 @@ class PatientBase(BaseModel):
     gestational_age_weeks: int
     is_first_pregnancy: bool = True
     medical_history: Optional[str] = None
+    preferred_language: Optional[str] = "English"
 
 class PatientCreate(PatientBase):
     pass

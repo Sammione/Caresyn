@@ -44,6 +44,12 @@ function PatientCard({ patient, onBack }) {
             <p><strong>Gestational Age:</strong> {patient.gestational_age_weeks} weeks</p>
             <p><strong>First Pregnancy:</strong> {patient.is_first_pregnancy ? 'Yes' : 'No'}</p>
             <p><strong>History:</strong> {patient.medical_history || 'None reported'}</p>
+            <p style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <strong>SMS Language:</strong>
+              <span style={{backgroundColor: 'rgba(139, 92, 246, 0.2)', color: '#a78bfa', padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.78rem', fontWeight: 600, border: '1px solid rgba(139,92,246,0.4)'}}>
+                🌐 {patient.preferred_language || 'English'}
+              </span>
+            </p>
           </div>
 
           <div style={{marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem'}}>
@@ -90,10 +96,19 @@ function PatientCard({ patient, onBack }) {
                 <span className="form-label">Recommendations</span>
                 <p style={{backgroundColor: 'rgba(15, 23, 42, 0.4)', padding: '0.75rem', borderRadius: '8px'}}>{assessment.recommendations}</p>
               </div>
-              
-              <div style={{marginTop: '1rem', padding: '1rem', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderRadius: '8px', border: '1px solid rgba(59, 130, 246, 0.3)'}}>
-                <p style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>
-                  The agent has automatically drafted a follow-up SMS and created a task in the dashboard based on this assessment.
+
+              {assessment.draft_sms && (
+                <div style={{marginTop: '0.5rem', padding: '1rem', backgroundColor: 'rgba(139, 92, 246, 0.08)', borderRadius: '8px', border: '1px solid rgba(139,92,246,0.35)'}}>
+                  <p style={{fontSize: '0.78rem', color: '#a78bfa', fontWeight: 600, marginBottom: '0.5rem'}}>
+                    📱 Draft SMS — {patient.preferred_language || 'English'}
+                  </p>
+                  <p style={{fontSize: '0.9rem', lineHeight: '1.6', color: 'var(--text-primary)'}}>{assessment.draft_sms}</p>
+                </div>
+              )}
+
+              <div style={{marginTop: '0.5rem', padding: '0.75rem', backgroundColor: 'rgba(59, 130, 246, 0.08)', borderRadius: '8px', border: '1px solid rgba(59, 130, 246, 0.25)'}}>
+                <p style={{fontSize: '0.82rem', color: 'var(--text-secondary)'}}>
+                  ✅ A follow-up task has been automatically created in the dashboard based on this assessment.
                 </p>
               </div>
             </div>

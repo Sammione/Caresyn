@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import { createPatient } from '../api';
 
+const LANGUAGES = [
+  { value: 'English', label: '🇬🇧 English' },
+  { value: 'Hausa', label: '🇳🇬 Hausa' },
+  { value: 'Yoruba', label: '🇳🇬 Yoruba' },
+  { value: 'Igbo', label: '🇳🇬 Igbo' },
+  { value: 'Pidgin', label: '🇳🇬 Nigerian Pidgin' },
+  { value: 'Swahili', label: '🌍 Swahili' },
+  { value: 'French', label: '🇫🇷 French' },
+];
+
 function PatientForm({ onComplete }) {
   const [formData, setFormData] = useState({
     name: '',
     age: '',
     gestational_age_weeks: '',
     is_first_pregnancy: true,
-    medical_history: ''
+    medical_history: '',
+    preferred_language: 'English'
   });
   const [loading, setLoading] = useState(false);
 
@@ -37,7 +48,7 @@ function PatientForm({ onComplete }) {
           <label className="form-label">Full Name</label>
           <input required type="text" className="form-input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Jane Doe" />
         </div>
-        
+
         <div className="grid-2">
           <div className="form-group">
             <label className="form-label">Age</label>
@@ -57,6 +68,25 @@ function PatientForm({ onComplete }) {
         <div className="form-group">
           <label className="form-label">Medical History (Optional)</label>
           <textarea className="form-textarea" rows="3" value={formData.medical_history} onChange={e => setFormData({...formData, medical_history: e.target.value})} placeholder="Any relevant past conditions..." />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">
+            🌐 Preferred Language for SMS
+          </label>
+          <select
+            className="form-input"
+            value={formData.preferred_language}
+            onChange={e => setFormData({...formData, preferred_language: e.target.value})}
+            style={{cursor: 'pointer'}}
+          >
+            {LANGUAGES.map(lang => (
+              <option key={lang.value} value={lang.value}>{lang.label}</option>
+            ))}
+          </select>
+          <p style={{fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.4rem'}}>
+            The AI will generate follow-up SMS messages in this language.
+          </p>
         </div>
 
         <button type="submit" className="btn btn-primary" style={{width: '100%', justifyContent: 'center', marginTop: '1rem'}} disabled={loading}>
