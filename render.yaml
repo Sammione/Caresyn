@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: caresyn-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false        # You will set this manually in Render dashboard
+      - key: FRONTEND_URL
+        sync: false        # Set to your Vercel URL e.g. https://caresyn.vercel.app
+      - key: DATABASE_URL
+        fromDatabase:
+          name: caresyn-db
+          property: connectionString
+
+databases:
+  - name: caresyn-db
+    databaseName: caresyn
+    user: caresyn
+    plan: free

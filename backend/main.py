@@ -1,19 +1,27 @@
+import os
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from dotenv import load_dotenv
 
 import models, schemas
 from database import engine, get_db
 from agent import analyze_patient_symptoms
 
+load_dotenv()
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="CareSyn API", version="1.0.0")
 
+# Allow Vercel frontend in production, all origins in local dev
+FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
+origins = [FRONTEND_URL] if FRONTEND_URL != "*" else ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # For development
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

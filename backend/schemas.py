@@ -16,8 +16,7 @@ class Task(TaskBase):
     status: str
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 class AssessmentBase(BaseModel):
     symptoms_reported: str
@@ -33,8 +32,7 @@ class Assessment(AssessmentBase):
     patient_id: int
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 class PatientBase(BaseModel):
     name: str
@@ -52,8 +50,7 @@ class Patient(PatientBase):
     assessments: List[Assessment] = []
     tasks: List[Task] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 class AgentInput(BaseModel):
     patient_id: int
